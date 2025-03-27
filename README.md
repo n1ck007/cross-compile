@@ -139,16 +139,25 @@ The reason specifying a pic option may not be required is becasue linux defaults
 
 To see the soname use `readelf -a lib/libmath.so.1.2.3 | grep soname`.
 
-## Demo 
-### Note Standard Library Directories
-Normally .so files need to be in a standard directory. 
-- `/lib`: critical to the system
-- `/usr/lib`: not essential but widely used 
-- `/usr/local/lib`: installed by admin
-Now days `/lib` is just a symlink to `/usr/lib`.
-To see the linker's list of search directories use ` ld --verbose | grep SEARCH_DIR`
+## Installing Shared Libraries
+### Standard Directories
+Normally .so files need to be in a standard directory so they can be located by `gcc` and `ld`. The table below provides commonly found exmaples.
 
-You can see by using `readelf -a doMath | grep Shared` that the lib has been dynamically linked. Notice that the lib list in the elf file is the soname.
+Historical `/lib` was for critical system libraries and `/usr/lib` was for non-essential but widely used system libraries. Now days all system libraries are store in one location and `/lib` is just a symlink to `/usr/lib`.
+
+| Directory | Specificity |
+|-|-|
+|`/usr/lib` | System |
+|`/usr/lib/x86_64-linux-gnu` | Architecture |
+|`/usr/local/lib`| Application |
+|`$HOME/.local/lib`| User |
+
+### Non-Standard Directories
+f you install a library in a non-standard directory, you need to add it to /etc/ld.so.conf.d/ and run `sudo ldconfig`.
+
+
+
+To see the linker's list of search directories use ` ld --verbose | grep SEARCH_DIR`
 
 By placing the real name, the soname, and the linker name info different directories we can see how they are being used.
 
@@ -162,5 +171,7 @@ Append to the `LD_LIBRARY_PATH` enviroment variable. This variable is empty by d
 
 This can be used to fix a `cannot open shared object file: No such file or directory` error you may encounter when trying to run your executable.
 
-#### 
+## Demo 
+You can see by using `readelf -a doMath | grep Shared` that the lib has been dynamically linked to the executable. Notice that the lib list in the elf file is the soname.
+
 

@@ -39,11 +39,3 @@ mkexe: mkobj mkreal mksoname mklnname
 
 clean:
 	rm -rf real so lib *.o doMath
-
-
-# without an soname (last step doesn't work)
-# mkdir -p lib1 real1
-# gcc -fpic -c addNumbers.c subNumbers.c
-# gcc -o real1/libmath.so.1.2.3 addNumbers.o subNumbers.o -shared
-# ln -s ../real1/libmath.so.1.2.3 lib1/libmath.so
-# gcc doMath.c -lmath -o doMath -I include -L lib -Wl,-rpath,lib
