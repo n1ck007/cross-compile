@@ -1,0 +1,37 @@
+Compiled with `gcc hello.c -lm -o hello`
+hello: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=11d1c8f9f61f4660611ffa6c8c9ca6c53042b773, for GNU/Linux 3.2.0, not stripped
+
+Compiled with `gcc hello.c -lm -no-pie -o hello`
+hello: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=3474161bbf603076b33c0520200676e369df4d5d, for GNU/Linux 3.2.0, not stripped
+
+
+
+format:         ELF (executable and linkable format)
+word size:      64-bit
+endian:         LSB (least significant byte Little Endian) MSB (most significant byte Big Endian)
+object type:    pie Position Independant Executable are the standard format for linux executables. Can be placed at any memory address and run fine.
+architecture:   x86-64
+format version: version one of System Five
+link type:      dynamically linked the binary have references to shared objects that excists somewhere on the system
+interpreter:    the interpreter is the linker and loader. The path "/lib64/ld-linux-x86-64.so.2" is the path of the interpreter
+SHA hash:       should be the same each time you build if nothing has changed. BuildID[sha1]=11d1c8f9f61f4660611ffa6c8c9ca6c53042b773
+kernal:         version of the linux kernel the file was compiled for "for GNU/Linux 3.2.0"
+debuging:       "not stripped" means it contains debuging symbols. Executables should be stripped before shipping
+
+
+readelf -a hello | grep "Shared"
+ 0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+
+Tells us this file needs to be linked to libc and libm
+
+readelf -a hello | grep "interpreter"
+      [Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]
+
+file hello.o
+hello.o: ELF 64-bit LSB relocatable, x86-64, version 1 (SYSV), not stripped
+relocatable:    non-executable file output from the assembly stage
+
+There are no shared objects for staticly linked executables
+readelf -a hello_static | grep "Shared" returns nothing
+
