@@ -149,9 +149,13 @@ If you wish to install your shared libraries in a non-standard location you'll t
 
 It should be noted that `ld` refers to the (static) linker that is used during the compilation process, but `ld.so` referes the dynamic linker/loader that's used by the operating system during the execution process.
 
-When a dynamicly linked executable is called, the invokation begins like any other program: 1. the executable is located and 2. the ELF headers are parsed.
+When a dynamicly linked executable is called, the invokation begins like any other program: 1. the executable is located and 2. the ELF headers are parsed. By examining the Program header `readelf --program-headers <exec>` we see the `INTERP` field which specifics program interpreter that should be used to run the executable.
 
-Dynamic linker configurations can be found in `/etc/ls.do.conf.d`
+
+
+
+
+<!-- Dynamic linker configurations can be found in `/etc/ls.do.conf.d` -->
 
 
 
