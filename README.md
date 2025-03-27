@@ -24,7 +24,7 @@ Main Takeaway: The compiled executable does NOT containe the actualy code for th
 Note: soname is a symbolic link to the real name
 
 ### Static Linking
-Main Takeaway:  All the symbols frome external libraries are resolve at compiltime and they're compiled into the final object file.
+Main Takeaway: All the symbols frome external libraries are resolve at compiltime and they're compiled into the final object file.
 
 
 ## Types of Object Files
@@ -112,23 +112,17 @@ Shared libraries can have three types of names
 ### Real Name
 The real name is the acutal compiled shared object and follow the convension `libNAME.so.MAJOR.MINOR.PATCH`. For example, the real name of the dynamic JPEG library, version 8.2.2, would be `libjpeg.so.8.2.2`
 
-However, not all shared libs do not follow this convension. The C library uses the convension `libNAME-MAJOR.MINOR.so` -> `libc-2.31.so`
+However, not all shared libs do not follow this convension. The C library uses the convension `libNAME-MAJOR.MINOR.so` becomes `libc-2.31.so`
 
-### Shared Object Name (soname)
-The soname is just a label for a major version of shared lib. Although not required, it makes resolving shared lib dependancies much easier.
+### Shared Object Name
+The shared object name, or soname, is just a label for a major version of shared lib. Although not required, it makes resolving shared lib dependancies much easier.
 
-A binary that is linked to a shared lib with an soname will look first for the soname on the target system. On the target system the soname is usually a symlink that points to the real name of the current version of the that library.
-
-        soname -> real name
-`libjpeg.so.8` -> `libjpeg.so.8.2.2`
+A binary that is linked to a shared lib with an soname will look first for the soname on the target system. On the target system the soname is usually a symlink that points to the real name of the current version of the that library. `libjpeg.so.8.2.2` becomes `libjpeg.so.8`
 
 ### Linker Name
-The linker name is simply the name of the shared lib that is invoked when linking it at compile time. `gcc` looks for this library during the linker phase when given the `-l` option. 
+The linker name is simply the name of the shared lib that is invoked when linking it at compile time. `gcc` looks for this library during the linker phase when given the `-l` option. `-ljpeg` becomes `libjpeg.so`
 
-  option -> linker name
-`-ljpeg` -> `libjpeg.so`
-
-## Create a Share Library 
+## Creating a Share Library 
 1. Generate the object files `-c` using `-fpic` or `-fPIC`.
 2. Compile the objects files into a shared lib useing `-shared`
 	- If a soname is desired, use `-Wl,-soname,<SONAME>`
@@ -136,8 +130,6 @@ The linker name is simply the name of the shared lib that is invoked when linkin
 Sometimes use `-fpic`, `-fPIC`, or neither will produce the same output. Best practice is to always put something, either `-fpic` or `-fPIC`.
 
 The reason specifying a pic option may not be required is becasue linux defaults to making .o relocatable, i.e. it is position independant.
-
-To see the soname use `readelf -a lib/libmath.so.1.2.3 | grep soname`.
 
 ## Installing Shared Libraries
 ### Standard Directories
@@ -153,11 +145,17 @@ Historical `/lib` was for critical system libraries and `/usr/lib` was for non-e
 |`$HOME/.local/lib`| User |
 
 ### Non-Standard Directories
-f you install a library in a non-standard directory, you need to add it to /etc/ld.so.conf.d/ and run `sudo ldconfig`.
+If you wish to install your shared libraries in a non-standard location you'll to update the dynamic linker's config files. 
+
+It should be noted that `ld` refers to the (static) linker that is used during the compilation process, but `ld.so` referes the dynamic linker/loader that's used by the operating system during the execution process.
+
+When a dynamicly linked executable is called, the invokation begins like any other program: 1. the executable is located and 2. the ELF headers are parsed.
+
+Dynamic linker configurations can be found in `/etc/ls.do.conf.d`
 
 
 
-To see the linker's list of search directories use ` ld --verbose | grep SEARCH_DIR`
+<!-- To see the linker's list of search directories use ` ld --verbose | grep SEARCH_DIR`
 
 By placing the real name, the soname, and the linker name info different directories we can see how they are being used.
 
@@ -169,9 +167,11 @@ If the library has no soname, `ld -rpath` accepts the linker name
 #### LD_LIBRARY_PATH
 Append to the `LD_LIBRARY_PATH` enviroment variable. This variable is empty by default and used to store additional search paths for the linker. `export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/path/to/shared/lib`
 
-This can be used to fix a `cannot open shared object file: No such file or directory` error you may encounter when trying to run your executable.
+This can be used to fix a `cannot open shared object file: No such file or directory` error you may encounter when trying to run your executable. -->
 
 ## Demo 
+To see the soname use `readelf -a lib/libmath.so.1.2.3 | grep soname`.
+
 You can see by using `readelf -a doMath | grep Shared` that the lib has been dynamically linked to the executable. Notice that the lib list in the elf file is the soname.
 
 

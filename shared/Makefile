@@ -34,6 +34,7 @@ mklnname: mkobj mkreal mksoname
 # -I is used because the header file is in a subdirectory
 # -L is used becuse the library is in a subdirectory
 # -rpath is used because the shared lib is in a non-standard directory
+# In practice, the linker name, soname, and real name are all stored in the same folder
 mkexe: mkobj mkreal mksoname mklnname
 	gcc doMath.c -lmath -o doMath -I include -L lib -Wl,-rpath,so
 
