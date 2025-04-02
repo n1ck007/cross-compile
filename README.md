@@ -169,13 +169,20 @@ If the library has no soname, `ld -rpath` accepts the linker name
 
 ### Other Methods of Updating the Linker's Search Path
 #### LD_LIBRARY_PATH
+See 18:40 in the video for more details
 Append to the `LD_LIBRARY_PATH` enviroment variable. This variable is empty by default and used to store additional search paths for the linker. `export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/path/to/shared/lib`
 
 This can be used to fix a `cannot open shared object file: No such file or directory` error you may encounter when trying to run your executable. -->
 
 ## Demo 
-To see the soname use `readelf -a lib/libmath.so.1.2.3 | grep soname`.
+You can see the soname of the library by using `readelf -a lib/libmath.so.1.2.3 | grep soname`.
 
-You can see by using `readelf -a doMath | grep Shared` that the lib has been dynamically linked to the executable. Notice that the lib list in the elf file is the soname.
+You can see the libc link script in `/usr/lib/x86_64-linux-gnu/libc.so` which links in the C standard library.
+
+You can see by using `readelf -a doMath | grep Shared` that the lib has been dynamically linked to the executable. Notice that the lib list in the elf file is the soname. The symlink `libmath.so` is just for the linker at compile time. This means that after compile `libmath.so` is not needed on the system. Keep this in mind for cross-compiling.
+
+The benefit of the soname is that we can change where the soname symlink points without needing to change the soname itself. This means you don't need to recompile. E.g. if we if we make a minor update to the library `libmath.so.1.3.0`, all we need to do is update the soname symlink. So, `libmath.so.1 -> libmath.so.1.2.3` becomes `libmath.so.1 -> libmath.so.1.3.0`.
+
+However be mindful when updating libraries. If the update is not backwards compatable, the major version should be changed `libmath.so.2.0.0` and the in turn the soname as well `libmath.so.2`. In this case you would need to recompile.
 
 
