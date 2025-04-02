@@ -145,14 +145,22 @@ Historical `/lib` was for critical system libraries and `/usr/lib` was for non-e
 |`$HOME/.local/lib`| User |
 
 ### Non-Standard Directories
-If you wish to install your shared libraries in a non-standard location you'll to update the dynamic linker's config files. 
+If you wish to install your shared libraries in a non-standard location you'll to update the dynamic linker's config files.
 
+
+## The Dynamic Linking Process
 It should be noted that `ld` refers to the (static) linker that is used during the compilation process, but `ld.so` referes the dynamic linker/loader that's used by the operating system during the execution process.
 
-When a dynamicly linked executable is called, the invokation begins like any other program: 1. the executable is located and 2. the ELF headers are parsed. By examining the Program header `readelf --program-headers <exec>` we see the `INTERP` field which specifics program interpreter that should be used to run the executable.
+When a dynamicly linked executable is called, the OS begins the invokation process just like any other program: 1. the executable is located and 2. the ELF headers are parsed. Using `readelf -a -W <exec>` we can find the `INTERP` header in the program section. This specifics program interpreter that should be used to run the executable. 
 
+```
+[Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]
+```
+When the OS encounters `INTERP`, it used the path stored there to load the dynamic linker into memory as a part for the program's inital memory layout. Note at this point the program is not running and in fact the dynamic linker is the first piece of code to be loaded in memory.
 
+Once the dynamic linker is loaded into memory is begins executing. It reads the Dynamic section of the ELF file which lists the shared libraries that need to be loaded and loads them. It also resolves all the symbol references in the program. 
 
+Once the linker is done, it transfers control to the program entry point and execution begins!
 
 
 <!-- Dynamic linker configurations can be found in `/etc/ls.do.conf.d` -->
