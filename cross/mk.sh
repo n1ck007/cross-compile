@@ -31,7 +31,7 @@ tar -xf zlib-1.2.11.tar.gz
 #   --prefix    specifies the install directory
 cd zlib-1.2.11
 mkdir -p $rootdir/rootfs/usr/local
-# CC=arm-linux-gnueabi-gcc ./configure --prefix=$rootdir/cross/rootfs/usr/local
+CC=arm-linux-gnueabi-gcc ./configure --prefix=$rootdir/cross/rootfs/usr/local
 cd $rootdir
 
 # 
