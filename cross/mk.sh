@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-if [[ "$(dirname $0)" != "." ]]; then
+if [[ "$(basename $(pwd))" != "cross" ]]; then
   printf "$(basename $0): This script must called from the directory it resides in.\n"
   exit 1
 fi
@@ -11,13 +11,14 @@ rootdir=$(pwd)
 # setup the target root file system
 mkdir -p $rootdir/rootfs/usr/local
 
+# 
 # zLib
 # 
-# Download tar
 # wget --no-clobber https://github.com/madler/zlib/archive/refs/tags/v1.2.11.tar.gz -O zlib/zlib-1.2.11.tar.gz
+cd zlib
 tar -xf zlib-1.2.11.tar.gz
 
-# Configure zLib
+# Configure
 # Reading the configure script helps and calling `./configure --help` us understand what args we should pass it.
 # Notes: 
 #   - In "/home/nick/.bashrc" the prefix is "/home/nick" see commands `dirname` and `basename`
@@ -30,12 +31,13 @@ tar -xf zlib-1.2.11.tar.gz
 #   --prefix    specifies the install directory
 cd zlib-1.2.11
 mkdir -p $rootdir/rootfs/usr/local
-CC=arm-linux-gnueabi-gcc ./configure --prefix=$rootdir/cross/rootfs/usr/local
+# CC=arm-linux-gnueabi-gcc ./configure --prefix=$rootdir/cross/rootfs/usr/local
+cd $rootdir
 
 # 
-
 # OpenSSL
 # 
-# Download tar
 # wget --no-clobber https://github.com/openssl/openssl/releases/download/OpenSSL_1_1_1/openssl-1.1.1.tar.gz -O openssl/openssl-1.1.1.tar.gz
+cd openssl
+tar -xf openssl-1.1.1.tar.gz
 
