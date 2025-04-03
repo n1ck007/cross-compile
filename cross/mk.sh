@@ -49,3 +49,5 @@ cd $rootdir
 cd openssl
 tar -xf openssl-1.1.1.tar.gz
 
+# TODO: put both tars in only directory?
+
