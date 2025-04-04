@@ -60,3 +60,6 @@ In this demo we'll be cross-compiling two third party libraries: zlib, a compres
 The cross-compiler: `sudo apt install gcc-arm-linux-gnueabi`
 EABI stands for Embedded-Application Binary Interface
 
+### Target System Depends
+Notice that `file rootfs/bin/openssl` says `interpreter /lib/ld-linux.so.3` meaning that the dynamic linker will also need to be installed on the target system for this to run properly.
+
